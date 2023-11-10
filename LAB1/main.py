@@ -9,9 +9,8 @@ Odrediti optimalni plan proizvodnje ukoliko se zna da prodajne cijene ovih proiz
 po toni za proizvode A, B i C.
 """
 
-import numpy as np
 import matplotlib.pyplot as plt
-
+import numpy as np
 from pulp import LpProblem, LpMaximize, LpVariable, LpInteger, LpMinimize, PULP_CBC_CMD, LpSolutionOptimal, LpSenses
 
 
@@ -108,8 +107,8 @@ def main() -> None:
     ax = fig.add_subplot(projection="3d")
 
     ax.plot_surface(x, y, c1, label="x1 + x2 + x3 = 300")
-    ax.plot_surface(x, y, c2, label="3x1 + 4x2 - 2x3 = 1000")
-    ax.plot_surface(x, y, c3, label="-2000x1 - 1000x2 + 3000x3 = -120")
+    ax.plot_surface(x, y, c2, label="3x1 + 4x2 - 2x3 <= 1000")
+    ax.plot_surface(x, y, c3, label="2000x1 + 1000x2 + 3000x3 >= 120")
 
     ax.scatter(0, 200, 100, label='Optimal solution (x1=0, x2=200, x3=100)')
 
