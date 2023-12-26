@@ -1,8 +1,8 @@
-from typing import Any, Dict
+from typing import Dict
 
 import numpy as np
 import numpy.typing as npt
-from pulp import LpVariable, LpProblem, LpMinimize, lpSum, LpBinary, PULP_CBC_CMD, PULP_CHOCO_CMD
+from pulp import LpBinary, LpMinimize, LpProblem, LpVariable, PULP_CBC_CMD, PULP_CHOCO_CMD, lpSum
 
 
 def construct_problem(costs: npt.NDArray[np.int64]) -> LpProblem:
@@ -10,9 +10,9 @@ def construct_problem(costs: npt.NDArray[np.int64]) -> LpProblem:
     columns: int
     rows, columns = costs.shape
 
-    x: Dict[Any, Dict[Any, LpVariable]] = LpVariable.dicts(name="x", indexs=(range(rows), range(columns)), cat=LpBinary)
+    x: Dict[int, Dict[int, LpVariable]] = LpVariable.dicts(name="x", indexs=(range(rows), range(columns)), cat=LpBinary)
 
-    problem: LpProblem = LpProblem("assignment_problem", LpMinimize)
+    problem: LpProblem = LpProblem(name="assignment_problem", sense=LpMinimize)
     problem += lpSum(costs[i][j] * x[i][j] for i in range(rows) for j in range(columns))
 
     for i in range(rows):
@@ -25,15 +25,13 @@ def construct_problem(costs: npt.NDArray[np.int64]) -> LpProblem:
 
 
 def solve_LP(problem: LpProblem) -> LpProblem:
-    problem.solver = PULP_CBC_CMD(msg=False)
-    problem.solve()
+    problem.solve(solver=PULP_CBC_CMD(msg=False))
 
     return problem
 
 
 def solve_CP(problem: LpProblem) -> LpProblem:
-    problem.solver = PULP_CHOCO_CMD(msg=False)
-    problem.solve()
+    problem.solve(solver=PULP_CHOCO_CMD(msg=False))
 
     return problem
 
